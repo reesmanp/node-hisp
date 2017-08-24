@@ -1,39 +1,64 @@
+// Require babel for runtime es5 syntax
+require('babel-register')({
+  presets: ['es2015']
+});
 'use strict';
-const SMTPServer = require('smtp-server').SMTPServer;
 
-function onAuth(auth, session, callback) {
-  if (auth.username === 'test') {
-    callback(null, { user: auth.username });
-  } else {
-    callback(new Error('Invalid username!'));
+require('./config/config').default('server');
+
+const Hapi = require('hapi');
+const Good = require('good');
+const mailServer = require('./mailServer').MailServer;
+
+// Create a server with a host and port
+const server = new Hapi.Server();
+
+server.connection({
+  host: process.env.HOST,
+  port: process.env.PORT
+});
+
+// Start mailServer
+server.app.mailServer = new mailServer();
+server.app.mailServer.run();
+
+// Server Logging Options
+const Options = {
+  ops: {
+    interval: 1000
+  },
+  reporters: {
+    myConsoleReporter: [{
+      module: 'good-squeeze',
+      name: 'Squeeze',
+      args: [{log: '*', response: '*', error: '*'}]
+    }, {
+      module: 'good-console'
+    }, 'stdout']
   }
-}
-
-function onData(stream, session, callback) {
-  console.log('Data:');
-  stream.pipe(process.stdout);
-  stream.on('end', callback);
-}
-
-function onConnect(session, callback) {
-  console.log(`Session:\n${JSON.stringify(session)}`);
-  callback();
-}
-
-const options = {
-  secure: false,
-  //name
-  authMethods: ['PLAIN', 'LOGIN'],
-  onAuth: onAuth,
-  onData: onData,
-  onConnect: onConnect
 };
 
-const server = new SMTPServer(options)
-  .listen(1025, 'localhost', err => { 
-    console.log('Server is up!');
-    if (err) {
-      console.error(err);
+server.register([
+  require('inert'),
+  {
+    register: require('hapi-routes'),
+    options: {
+      dir: `${__dirname}/routes`
     }
+  },
+  {
+    register: Good,
+    options: Options
+  }
+], err => {
+  if(err) {
+    return console.error("Failed to load a plugin: ", err);
+  }
+  // Start the server
+  server.start(err => {
+    if(err) {
+      return console.error(err);
+    }
+    console.log(`*****\nSERVER\n${require('date-and-time').format(new Date(), 'HH:mm:ss | DD MMM Y')}\n${server.info.uri}\n*****`);
   });
-
+});

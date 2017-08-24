@@ -15,11 +15,11 @@ class Mailer {
       port: this.port,
       secure: true,
       tls: {
-	rejectUnauthorized: false
+        rejectUnauthorized: false
       },
       auth: {
-	user: this.user,
-	pass: this.pass
+        user: this.user,
+        pass: this.pass
       }
     });
   }
@@ -32,18 +32,19 @@ class Mailer {
 
   sendMail(callback) {
     if (callback) {
-      transporter.sendMail(this.mailOpts, callback);
+      this.transporter.sendMail(this.mailOpts, callback);
     } else {
       return new Promise((resolve, reject) => (
-	transporter.sendMail(this.mailOpts, (error, info) => {
-	  if (error) {
-	    return reject(error);
-	  } else {
-	    return resolve(info);
-	  }
-	})
+        this.transporter.sendMail(this.mailOpts, (error, info) => {
+          if (error) {
+            return reject(error);
+          } else {
+            return resolve(info);
+          }
+        })
       ));
     }
   }
 }
 
+export default Mailer;
