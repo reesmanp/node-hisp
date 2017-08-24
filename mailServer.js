@@ -28,6 +28,7 @@ class MailServer {
         return console.error(err);
       }
       this.db = db;
+      this.db.createCollection('domains', err => err ? console.error(err) : null);
     });
   }
 
