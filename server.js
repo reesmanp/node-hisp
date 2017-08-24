@@ -28,6 +28,7 @@ require('mongodb').MongoClient.connect(process.env.MONGO, (err, db) => {
     return console.error(err);
   }
   server.app.db = db;
+  server.app.db.createCollection('users', err => err ? console.error(err) : null);
 })
 
 // Server Logging Options
