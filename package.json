@@ -16,6 +16,7 @@
     "hapi": "^16.5.2",
     "hapi-routes": "^3.0.0",
     "inert": "^4.2.1",
+    "mongodb": "^2.2.31",
     "node-env-file": "^0.1.8",
     "nodemailer": "^4.0.1",
     "nodemon": "^1.11.0",

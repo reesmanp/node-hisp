@@ -22,6 +22,14 @@ server.connection({
 server.app.mailServer = new mailServer();
 server.app.mailServer.run();
 
+// Connect to mongodb
+require('mongodb').MongoClient.connect(process.env.MONGO, (err, db) => {
+  if (err) {
+    return console.error(err);
+  }
+  server.app.db = db;
+})
+
 // Server Logging Options
 const Options = {
   ops: {

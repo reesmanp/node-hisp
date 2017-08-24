@@ -5,6 +5,7 @@ require('./config/config').default('mail');
 
 const SMTPServer = require('smtp-server').SMTPServer;
 const optionFunctions = require('./util/optionFunctions');
+const mongodb = require('mongodb').MongoClient;
 
 const options = {
   secure: true,
@@ -19,7 +20,15 @@ class MailServer {
   constructor() {
     this.host = process.env.MAILHOST;
     this.port = process.env.MAILPORT;
+    this.mongoURI = process.env.MAILMONGO;
     this.SMTPServer = null;
+
+    mongodb.connect(this.mongoURI, (err, db) => {
+      if (err) {
+        return console.error(err);
+      }
+      this.db = db;
+    });
   }
 
   run() {
