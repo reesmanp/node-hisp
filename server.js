@@ -29,7 +29,12 @@ require('mongodb').MongoClient.connect(process.env.MONGO, (err, db) => {
   }
   server.app.db = db;
   server.app.db.createCollection('users', err => err ? console.error(err) : null);
+  server.app.db.createCollection('jwt', err => err ? console.error(err) : null);
+  server.app.db.createIndex('jwt', { sessionId: 1 }, { unique: true });
 })
+
+// Create new JWT secret
+process.env.JWTSECRET = require('crypto').randomBytes(256).toString('base64');
 
 // Server Logging Options
 const Options = {
@@ -49,6 +54,7 @@ const Options = {
 
 server.register([
   require('inert'),
+  require('hapi-auth-jwt2'),
   {
     register: require('hapi-routes'),
     options: {
@@ -63,6 +69,13 @@ server.register([
   if(err) {
     return console.error("Failed to load a plugin: ", err);
   }
+
+  server.auth.strategy('jwt', 'jwt', true, {
+    key: process.env.JWTSECRET,
+    validateFunc: require('./util/auth').jwtAuth,
+    verifyOptions: { algorithms: ['HS256'] }
+  });
+
   // Start the server
   server.start(err => {
     if(err) {

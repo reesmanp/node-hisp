@@ -1,5 +1,6 @@
 import mailer from '../util/mailer';
 
+// Uses a mail server object to send an email
 function sendMail(response, mailServer, credentials, mailOpts) {
   // TODO: should be done at login
   const { host, port } = mailServer.getConfig();
