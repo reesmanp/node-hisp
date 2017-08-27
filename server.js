@@ -55,6 +55,7 @@ const Options = {
 server.register([
   require('inert'),
   require('hapi-auth-jwt2'),
+  require('scooter'),
   {
     register: require('hapi-routes'),
     options: {
