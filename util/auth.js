@@ -12,6 +12,7 @@ MongoClient.connect(process.env.MONGO, (err, db) => {
 
 // JWT Validation Function
 function jwtAuth(decoded, request, callback) {
+  // TODO: add request.plugins.scooter.toJSON() in JWT storage <-- device info
   // Find a session
   sessions.findOne({ sessionId: decoded.sessionId })
     .then(session => {
