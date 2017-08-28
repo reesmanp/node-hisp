@@ -34,7 +34,7 @@ class MailServer {
 
   run() {
     this.SMTPServer = new SMTPServer(options)
-      .listen(this.port, this.host, err => {
+      .listen(this.port/*, this.host TODO: see if this is needed */, err => {
         if (err) {
           return console.error(err);
         }

@@ -14,7 +14,7 @@ const mailServer = require('./mailServer').MailServer;
 const server = new Hapi.Server();
 
 server.connection({
-  host: process.env.HOST,
+  //host: process.env.HOST,  TODO: see if this is needed at all
   port: process.env.PORT
 });
 
