@@ -5,7 +5,7 @@ module.exports = {
     index: './views/index.js'
   },
   output: {
-    path: __dirname + '/static',
+    path: __dirname + '/static/js',
     filename: '[name].min.js'
   },
   plugins: [
