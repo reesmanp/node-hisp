@@ -6,7 +6,6 @@ cd ..
 PIDFILE="logs/hisp.pid"
 if [ ! -e $PIDFILE ]; then
   mkdir -p `dirname logs/server.log`
-  yarn
   ./node_modules/nodemon/bin/nodemon.js server.js >> logs/server.log & echo $! >> ./logs/hisp.pid
   echo '*****************'
   echo 'Node HISP Started'
