@@ -20,7 +20,7 @@ export const auth = (state = initialState.get('auth'), action) => {
     case Actions.SET_JWT:
       return state.set('jwt', action.value);
 
-    case Actions.LOGOUT:
+    case Actions.SIGN_OUT:
       state.set('username', '');
       state.set('password', '');
       state.set('jwt', undefined);

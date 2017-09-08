@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import appStore from '../reducers'
 import Banner from './banner';
+import Body from './body';
 
 const store = createStore(
   appStore,
@@ -15,6 +16,7 @@ export default () => (
   <Provider store={store}>
     <div>
       <Banner/>
+      <Body/>
     </div>
   </Provider>
 );

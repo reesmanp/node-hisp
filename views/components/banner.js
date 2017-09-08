@@ -1,8 +1,9 @@
 import React from 'react';
+import  { connect } from 'react-redux';
 import Appbar from 'muicss/lib/react/appbar';
 import Login from './login';
 
-export default () => {
+const banner = () => {
   const appBarHeight = 'mui--appbar-height mui--appbar-line-height';
   const styles = {
     padding: '5px'
@@ -16,3 +17,5 @@ export default () => {
     </Appbar>
   );
 };
+
+export default connect()(banner);

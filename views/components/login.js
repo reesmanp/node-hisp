@@ -6,14 +6,14 @@ import LoginForm from './loginForm';
 import { auth as Actions } from '../actions';
 import 'whatwg-fetch'
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = state => ({
   isAuthorized: !!state.getIn(['auth', 'jwt']),
   authorization: state.getIn(['auth', 'jwt']),
   username: state.getIn(['auth', 'username']),
   password: state.getIn(['auth', 'password'])
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = dispatch => ({
   signout: () => {
     dispatch(Actions.signout());
   }

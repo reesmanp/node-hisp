@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const babili = require('babili-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -9,9 +10,7 @@ module.exports = {
     filename: '[name].min.js'
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false }
-    })
+    new babili()
   ],
   module: {
     loaders: [
