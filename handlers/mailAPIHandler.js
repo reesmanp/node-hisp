@@ -50,8 +50,24 @@ function getDomains(server, request, response) {
   });
 }
 
+// Deletes a domain
+function deleteDomain(server, request, response) {
+  const domains = server.app.mailServer.db.collection('domains');
+  domains.updateOne(
+    { user: request.auth.credentials.username },
+    { $pull:
+      {
+        domains: { $in: [request.payload.domain] }
+      }
+    }
+  );
+  return response(`Domain ${request.payload.domain} deleted!`)
+    .header('Authorization', request.auth.token);
+}
+
 export {
   sendMail,
   createDomain,
-  getDomains
+  getDomains,
+  deleteDomain
 };

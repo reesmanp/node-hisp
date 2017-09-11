@@ -1,4 +1,9 @@
-import { sendMail, createDomain, getDomains } from '../handlers/mailAPIHandler';
+import {
+  sendMail,
+  createDomain,
+  getDomains,
+  deleteDomain
+} from '../handlers/mailAPIHandler';
 
 exports.routes = server => {
   server.route({
@@ -17,5 +22,11 @@ exports.routes = server => {
     method: 'GET',
     path: '/api/domain',
     handler: (request, response) => getDomains(server, request, response)
+  });
+
+  server.route({
+    method: 'DELETE',
+    path: '/api/domain',
+    handler: (request, response) => deleteDomain(server, request, response)
   });
 };
