@@ -57,7 +57,7 @@ function deleteDomain(server, request, response) {
     { user: request.auth.credentials.username },
     { $pull:
       {
-        domains: { $in: [request.payload.domain] }
+        domains: { name: request.payload.domain }
       }
     }
   );
