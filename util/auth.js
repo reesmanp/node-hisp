@@ -1,23 +1,15 @@
 import JWT from 'jsonwebtoken';
-import { MongoClient } from'mongodb';
-
-// Connect to MongoDB
-let sessions;
-MongoClient.connect(process.env.MONGO, (err, db) => {
-  if (err) {
-    return console.error(err);
-  }
-  sessions = db.collection('jwt');
-})
+import server from '../server';
 
 // JWT Validation Function
 function jwtAuth(decoded, request, callback) {
   // TODO: add request.plugins.scooter.toJSON() in JWT storage <-- device info
+  const sessions = server.app.sessions;
   // Find a session
-  sessions.findOne({ sessionId: decoded.sessionId })
-    .then(session => {
+  if (sessions.hasOwnProperty(decoded.sessionId)) {
+    const session = sessions[`${decoded.sessionId}`];
       // If the JWT matches the latest issued JWT
-      if (session.username === decoded.username && session.iat === decoded.iat) {
+      if (session.token.username === decoded.username && session.token.iat === decoded.iat) {
         // Refresh JWT
         const token = {
           username: decoded.username,
@@ -25,14 +17,19 @@ function jwtAuth(decoded, request, callback) {
           iat: Date.now()
         };
         // Update stored JWT
-        sessions.updateOne({ sessionId: token.sessionId }, token);
+        clearTimeout(session.timeout);
+        server.app.sessions[`${decoded.sessionId}`] = {
+          token: token,
+          timeout: setTimeout(() => delete server.app.sessions[`${decoded.sessionId}`], 5 * 60 * 1000)
+        };
         request.auth.token = JWT.sign(token, process.env.JWTSECRET, {expiresIn: 5 * 60});
         return callback(null, true);
       }
       // JWT is not the latest issued JWT
       return callback(null, false);
-    })
-    .catch(err => console.error(err) && callback(err, false));
+    }
+    // Session does not exist in memory
+    return callback(null, false);
 }
 
 export {

@@ -32,9 +32,6 @@ exports.routes = server => {
   server.route({
     method: 'POST',
     path: '/authenticate/signout',
-    //config: {
-    //  auth: 'jwt'
-    //},
     handler: (request, response) => signout(server, request, response)
   });
 };

@@ -29,8 +29,7 @@ require('mongodb').MongoClient.connect(process.env.MONGO, (err, db) => {
   }
   server.app.db = db;
   server.app.db.createCollection('users', err => err ? console.error(err) : null);
-  server.app.db.createCollection('jwt', err => err ? console.error(err) : null);
-  server.app.db.createIndex('jwt', { sessionId: 1 }, { unique: true });
+  server.app.sessions = {};
 })
 
 // Create new JWT secret
@@ -85,3 +84,5 @@ server.register([
     console.log(`*****\nSERVER\n${require('date-and-time').format(new Date(), 'HH:mm:ss | DD MMM Y')}\n${server.info.uri}\n*****`);
   });
 });
+
+module.exports = server;
