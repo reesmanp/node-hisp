@@ -25,6 +25,7 @@
     "immutable": "^3.8.1",
     "inert": "^4.2.1",
     "jsonwebtoken": "^7.4.3",
+    "lodash": "^4.17.4",
     "mongodb": "^2.2.31",
     "muicss": "^0.9.23",
     "node-env-file": "^0.1.8",

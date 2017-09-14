@@ -40,6 +40,7 @@ function signin(server, request, response) {
         };
         server.app.sessions[`${token.sessionId}`] = {
           token: token,
+          device: request.plugins.scooter.toJSON(),
           timeout: setTimeout(() => delete server.app.sessions[`${token.sessionId}`], 5 * 60 * 1000)
         };
         const jwt = JWT.sign(token, process.env.JWTSECRET, { expiresIn: 5 * 60 });
