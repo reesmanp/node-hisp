@@ -29,6 +29,7 @@ class MailServer {
       }
       this.db = db;
       this.db.createCollection('domains', err => err ? console.error(err) : null);
+      this.db.createCollection('keys', err => err ? console.error(err) : null);
     });
   }
 

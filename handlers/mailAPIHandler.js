@@ -2,8 +2,7 @@ import mailer from '../util/mailer';
 
 // Uses a mail server object to send an email
 function sendMail(server, request, response) {
-  // TODO: should be done at login
-  const { host, port } = mailServer.getConfig();
+  const { host, port } = server.app.mailServer.getConfig();
   const { user, pass } = request.payload.credentials;
   const mailOpts = request.payload.mailOpts;
   const mailObj = new mailer(host, port, user, pass);
@@ -25,11 +24,9 @@ function createDomain(server, request, response) {
       .header('Authorization', request.auth.token);
   }
   domains.updateOne(
-    { user: request.auth.credentials.username },
-    { $addToSet:
-      {
-        domains: { name: request.payload.domain, type: 'hosted' }
-      }
+    { name: request.payload.domainName },
+    {
+      type: request.payload.domainType
     },
     { upsert: true }
   );
@@ -54,14 +51,27 @@ function getDomains(server, request, response) {
 function deleteDomain(server, request, response) {
   const domains = server.app.mailServer.db.collection('domains');
   domains.updateOne(
-    { user: request.auth.credentials.username },
-    { $pull:
-      {
-        domains: { name: request.payload.domain }
-      }
+    { name: request.payload.domainName },
+    {
+      type: request.payload.domainType
     }
   );
   return response(`Domain ${request.payload.domain} deleted!`)
+    .header('Authorization', request.auth.token);
+}
+
+function addKey(server, request, response) {
+  const keys = server.app.mailServer.db.collection('keys');
+  keys.updateOne(
+    { name: request.payload.keyName },
+    { $setOnInsert:
+      {
+        key: request.payload.key
+      }
+    },
+    { upsert: true }
+  );
+  return response(`Key ${request.payload.keyName} added!`)
     .header('Authorization', request.auth.token);
 }
 
@@ -69,5 +79,6 @@ export {
   sendMail,
   createDomain,
   getDomains,
-  deleteDomain
+  deleteDomain,
+  addKey
 };
