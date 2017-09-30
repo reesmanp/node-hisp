@@ -24,7 +24,7 @@ exports.routes = server => {
   // Check if Signed In Route
   server.route({
     method: 'GET',
-    path: '/authenticate/signin',
+    path: '/authenticate',
     handler: (request, response) => response().header('authorization', request.auth.token)
   });
 
