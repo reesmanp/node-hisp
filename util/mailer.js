@@ -25,7 +25,7 @@ class Mailer {
   }
 
   createMail(mailOpts) {
-    ['from', 'to', 'cc', 'bcc', 'subject', 'text', 'html', 'attachments']
+    ['from', 'to', 'cc', 'bcc', 'subject', 'text', 'html', 'attachments', 'dkim']
       .forEach(i => mailOpts.hasOwnProperty(i) ? this.mailOpts[i] = mailOpts[i] : null);
     return this;
   }

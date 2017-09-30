@@ -10,7 +10,7 @@ function signup(server, request, response) {
 
   if (username && password) {
     const users = server.app.db.collection('users');
-    const status = users.update(
+    const status = users.updateOne(
       { username: username },
       { $setOnInsert: { password: password } },
       { upsert: true }
@@ -38,8 +38,11 @@ function signin(server, request, response) {
           sessionId: crypto.randomBytes(256).toString('base64'),
           iat: Date.now()
         };
-        const sessions = server.app.db.collection('jwt');
-        sessions.insertOne(token);
+        server.app.sessions[`${token.sessionId}`] = {
+          token: token,
+          device: request.plugins.scooter.toJSON(),
+          timeout: setTimeout(() => delete server.app.sessions[`${token.sessionId}`], 5 * 60 * 1000)
+        };
         const jwt = JWT.sign(token, process.env.JWTSECRET, { expiresIn: 5 * 60 });
         return response('You are logged in!').header('Authorization', jwt);
       }
@@ -52,8 +55,8 @@ function signin(server, request, response) {
 
 // Sign Out
 function signout(server, request, response) {
-  const sessions = server.app.db.collection('jwt');
-  sessions.deleteOne(request.auth.credentials);
+  clearTimeout(server.app.sessions[`${request.auth.credentials.sessionId}`]);
+  delete server.app.sessions[`${request.auth.credentials.sessionId}`];
   return response('You are logged out');
 }
 
