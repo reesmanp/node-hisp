@@ -4,7 +4,7 @@ import { signup, signin, signout } from '../handlers/authenticateHandler';
 exports.routes = server => {
   server.route({
     method: 'POST',
-    path: '/authenticate/signup',
+    path: '/authenticate/register',
     config: {
       auth: false
     },
@@ -14,7 +14,7 @@ exports.routes = server => {
   // Sign In Route
   server.route({
     method: 'POST',
-    path: '/authenticate/signin',
+    path: '/authenticate',
     config: {
       auth: false
     },
@@ -30,8 +30,8 @@ exports.routes = server => {
 
   // Sign Out Route
   server.route({
-    method: 'POST',
-    path: '/authenticate/signout',
+    method: 'DELETE',
+    path: '/authenticate',
     handler: (request, response) => signout(server, request, response)
   });
 };

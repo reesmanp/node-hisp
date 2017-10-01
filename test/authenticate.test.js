@@ -15,12 +15,12 @@ describe('authentication and authorization', () => {
   let jwt;
 
   it('should create a user', async () => {
-    const res = await chai.request(server.listener).post('/authenticate/signup').send(payload);
+    const res = await chai.request(server.listener).post('/authenticate/register').send(payload);
     //expect(res.body.nModified).to.equal(1); TODO: uncomment when delete user is implemented
   });
 
   it('should sign in', async () => {
-    const res = await chai.request(server.listener).post('/authenticate/signin').send(payload);
+    const res = await chai.request(server.listener).post('/authenticate').send(payload);
     expect(res.headers.authorization);
     jwt = res.headers.authorization;
   });

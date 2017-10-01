@@ -3,9 +3,9 @@ import mailer from '../util/mailer';
 // Uses a mail server object to send an email
 function sendMail(server, request, response) {
   const { host, port } = server.app.mailServer.getConfig();
-  const { user, pass } = request.payload.credentials;
+  const { username, password } = request.payload.credentials;
   const mailOpts = request.payload.mailOpts;
-  const mailObj = new mailer(host, port, user, pass);
+  const mailObj = new mailer(host, port, username, password);
 
   mailObj.createMail(mailOpts);
   mailObj.sendMail()
