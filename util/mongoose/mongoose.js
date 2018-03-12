@@ -1,0 +1,6 @@
+import mongoose from 'mongoose';
+
+export default uri => {
+    mongoose.connect(uri);
+    return mongoose.connection;
+};

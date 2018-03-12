@@ -1,3 +1,6 @@
 {
-  "ignore": ["views/*", "static/*"]
+  "ignore": ["views/*", "static/*"],
+  "execMap": {
+    "js" : "node --trace-warnings"
+  }
 }

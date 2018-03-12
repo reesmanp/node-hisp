@@ -3,38 +3,24 @@
 // Set configuration
 require('./config/config').default('mail');
 
-const SMTPServer = require('smtp-server').SMTPServer;
-const optionFunctions = require('./util/optionFunctions');
-const mongodb = require('mongodb').MongoClient;
-
-const options = {
-  secure: true,
-  //name
-  authMethods: ['PLAIN', 'LOGIN'],
-  onAuth: optionFunctions.onAuth,
-  onData: optionFunctions.onData,
-  onConnect: optionFunctions.onConnect
-};
+import {SMTPServer} from 'smtp-server';
+import mongoose from './util/mongoose';
+import {mailServerOptions} from './config/options'
 
 class MailServer {
   constructor() {
     this.host = process.env.MAILHOST;
     this.port = process.env.MAILPORT;
-    this.mongoURI = process.env.MAILMONGO;
+    this.mongooseURI = process.env.MAILMONGOOSEURI;
     this.SMTPServer = null;
-
-    mongodb.connect(this.mongoURI, (err, db) => {
-      if (err) {
-        return console.error(err);
-      }
-      this.db = db;
-      this.db.createCollection('domains', err => err ? console.error(err) : null);
-      this.db.createCollection('keys', err => err ? console.error(err) : null);
-    });
+    this.db = mongoose(this.mongooseURI);
+    this.options = mailServerOptions;
+    //this.db.createCollection('domains', err => err ? console.error(err) : null);
+    //this.db.createCollection('keys', err => err ? console.error(err) : null);
   }
 
   run() {
-    this.SMTPServer = new SMTPServer(options)
+    this.SMTPServer = new SMTPServer(this.options)
       .listen(this.port/*, this.host TODO: see if this is needed */, err => {
         if (err) {
           return console.error(err);
@@ -45,7 +31,7 @@ class MailServer {
 
   stop() {
     if (this.SMTPServer) {
-      this.SMTPServer.close(e => this.SMTPServer = null);
+      this.SMTPServer.close(() => this.SMTPServer = null);
     }
   }
 
