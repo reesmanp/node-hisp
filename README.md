@@ -4,9 +4,28 @@ A HISP implementation written in Node.JS.
 **Note:** This project is still under development.
 
 **TODO:**
-  - Email Client
-  - Management Portal
-  - DKIM email signing
+- Email Client
+- Management Portal
+- DKIM email signing
+
+## Requirements
+- Node >= 8.x
+- One of:
+  - NPM >= 5.x
+  - Yarn >= 0.27.5
+
+## Installation
+- `git clone https://github.com/reesmanp/node-hisp.git`
+- `cd node-hisp`
+- `./bin/install.sh`
+  - If you prefer using yarn, then use `./bin/install.sh yarn`
+
+## How to run?
+One of these options:
+- `./bin/start.sh`
+  - `./bin/stop.sh` to stop
+- `npm run start`
+- `yarn start`
 
 ## What is a HISP?
 HISP stands for Health Information Service Provider. Basically what a HISP is is a secure email server for medical professionals to use in order to send PHI without violating HIPAA.

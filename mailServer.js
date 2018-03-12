@@ -3,9 +3,9 @@
 // Set configuration
 require('./config/config').default('mail');
 
-import {SMTPServer} from 'smtp-server';
+import { SMTPServer } from 'smtp-server';
 import mongoose from './util/mongoose';
-import {mailServerOptions} from './config/options'
+import { mailServerOptions } from './config/options'
 
 class MailServer {
   constructor() {

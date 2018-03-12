@@ -1,4 +1,8 @@
-import {onAuth, onData, onConnect} from '../../util/optionFunctions';
+import {
+    onAuth,
+    onData,
+    onConnect
+} from '../../util/optionFunctions';
 
 export default {
     secure: true,
