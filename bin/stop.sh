@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 PIDFILE="../logs/hisp.pid"
 if [ -e $PIDFILE ]; then
-  kill -9 $(<"$PIDFILE")
+  kill $(<"$PIDFILE")
   rm -f $PIDFILE
   echo '*****************'
   echo 'Node HISP Stopped'

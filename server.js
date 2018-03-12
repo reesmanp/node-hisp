@@ -5,7 +5,8 @@ require('./config/config').default('server');
 
 const Hapi = require('hapi');
 const mailServer = require('./mailServer').MailServer;
-const mongoose = require('./util/mongoose').default;
+const mongoose = require('./util/mongoose').default(process.env.MONGOOSEURI);
+const options = require('./config/options').default;
 
 // Create a server with a host and port
 const server = new Hapi.Server({
@@ -26,25 +27,30 @@ async function startServer() {
       require('inert'),
       require('hapi-auth-jwt2'),
       require('scooter'),
-      require('./config/options').hapiRoutes(__dirname),
-      require('./config/options').good
+      options.hapiRoutes(__dirname),
+      options.good
   ]);
 
-    server.auth.strategy('jwt', 'jwt', true, {
-        key: process.env.JWTSECRET,
-        validateFunc: require('./util/auth').jwtAuth,
-        verifyOptions: {algorithms: ['HS256']}
-    });
+  server.auth.strategy('jwt', 'jwt', {
+      key: process.env.JWTSECRET,
+      validate: require('./util/auth').jwtAuth,
+      verifyOptions: {algorithms: ['HS256']}
+  });
 
-    await server.start();
+  await server.start();
 
-    require('ascii-art').font('Node', 'Doom', 'red').font('HISP', 'Doom', 'italic+green', ascii => {
-        console.log(ascii);
-        console.log('*****');
-        console.log(`${require('date-and-time').format(new Date(), 'HH:mm:ss | DD MMM Y')}\n${server.info.uri}`);
-        console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-        console.log('*****');
-    });
+  process.on('SIGTERM', () => {
+    server.app.mailServer.stop();
+    server.stop();
+  });
+
+  require('ascii-art').font('Node', 'Doom', 'red').font('HISP', 'Doom', 'italic+green', ascii => {
+      console.log(ascii);
+      console.log('*****');
+      console.log(`${require('date-and-time').format(new Date(), 'HH:mm:ss | DD MMM Y')}\n${server.info.uri}`);
+      console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+      console.log('*****');
+  });
 }
 
 startServer();
