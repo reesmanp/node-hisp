@@ -1,4 +1,4 @@
-import { Schema, Model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 export const Key = new Schema({
   name: { // Unique key name
@@ -16,4 +16,4 @@ export const Key = new Schema({
   }
 });
 
-export default Model(Key);
+export default mongoose.model('Key', Key);

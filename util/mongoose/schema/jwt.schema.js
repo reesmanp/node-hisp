@@ -1,4 +1,4 @@
-import { Schema, Model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 export const JWTSchema = new Schema({
   user: { // Username -- hashed
@@ -29,4 +29,4 @@ export const JWTSchema = new Schema({
   }
 });
 
-export default Model(JWTSchema);
+export default mongoose.model('JWT', JWTSchema);

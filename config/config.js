@@ -9,6 +9,7 @@ export default serverType => {
     env(`${__dirname}/config.${serverType}.dev.env`);
     break;
   default:
+    process.env.NODE_ENV = 'local';
     env(`${__dirname}/config.${serverType}.local.env`);
   }
 };

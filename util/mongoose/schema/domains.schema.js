@@ -1,4 +1,4 @@
-import { Schema, Model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { Key } from './keys.schema';
 import { Url } from './urls.schema';
 
@@ -12,4 +12,4 @@ export const Domain = new Schema({
   keys: [Key]  // List of keys associated with the domain
 });
 
-export default Model(Domain);
+export default mongoose.model('Domain', Domain);

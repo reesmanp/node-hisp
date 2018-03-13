@@ -1,4 +1,4 @@
-import { Schema, Model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { generate } from 'randomstring';
 
 export const User = new Schema({
@@ -22,4 +22,4 @@ export const User = new Schema({
   }
 });
 
-export default Model(User);
+export default mongoose.model('User', User);

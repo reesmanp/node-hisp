@@ -1,12 +1,10 @@
 {
   "presets": [
-    "env",
-    {
+    ["env", {
       "targets": {
-          "browsers": ["> 5%"]
+        "node": "current"
       }
-    },
-    "react"
+    }]
   ]
 }
 

@@ -1,4 +1,4 @@
-import { Schema, Model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 export const Url = new Schema({
   url: { // URI string
@@ -8,4 +8,4 @@ export const Url = new Schema({
   }
 });
 
-export default Model(Url);
+export default mongoose.model('URL', Url);
