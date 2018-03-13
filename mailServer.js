@@ -25,7 +25,11 @@ class MailServer {
         if (err) {
           return console.error(err);
         }
-        console.log(`*****\nMAIL SERVER\n${require('date-and-time').format(new Date(), 'HH:mm:ss | DD MMM Y')}\n${this.host}:${this.port}\n*****`);
+        console.log('*****');
+        console.log('MAIL SERVER');
+        console.log(`${require('date-and-time').format(new Date(), 'HH:mm:ss | DD MMM Y')}`);
+        console.log(`${this.host}:${this.port}`);
+        console.log('*****');
       });
   }
 

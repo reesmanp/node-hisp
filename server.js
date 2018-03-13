@@ -46,7 +46,9 @@ async function startServer() {
   require('ascii-art').font('Node', 'Doom', 'red').font('HISP', 'Doom', 'italic+green', ascii => {
       console.log(ascii);
       console.log('*****');
-      console.log(`${require('date-and-time').format(new Date(), 'HH:mm:ss | DD MMM Y')}\n${server.info.uri}`);
+      console.log('API SERVER');
+      console.log(`${require('date-and-time').format(new Date(), 'HH:mm:ss | DD MMM Y')}`);
+      console.log(`${server.info.uri}`);
       console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
       console.log('*****');
   });
