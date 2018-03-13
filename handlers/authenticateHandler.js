@@ -30,7 +30,7 @@ function signin(server, request, response) {
   if (username && password) {
     const users = server.app.db.collection('users');
     users.findOne(
-      {username: username}
+      { username: username }
     ).then(user => {
       if (user.password === password) {
         const token = {

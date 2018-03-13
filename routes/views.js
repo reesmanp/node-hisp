@@ -1,5 +1,4 @@
 exports.routes = server => {
-
   // Get index.html
   server.route({
     method: 'GET',

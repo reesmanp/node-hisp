@@ -67,8 +67,7 @@ function addKey(server, request, response) {
     { $setOnInsert:
       {
         key: request.payload.key
-      }
-    },
+      } },
     { upsert: true }
   );
   return response(`Key ${request.payload.keyName} added!`)

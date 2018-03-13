@@ -16,7 +16,7 @@ describe('authentication and authorization', () => {
 
   it('should create a user', async () => {
     const res = await chai.request(server.listener).post('/authenticate/register').send(payload);
-    //expect(res.body.nModified).to.equal(1); TODO: uncomment when delete user is implemented
+    //Expect(res.body.nModified).to.equal(1); TODO: uncomment when delete user is implemented
   });
 
   it('should sign in', async () => {
@@ -34,7 +34,7 @@ describe('authentication and authorization', () => {
     const res = await chai.request(server.listener).get('/authenticate').set('authorization', jwt);
     try {
       await chai.request(server.listener).get('/authenticate').set('authorization', jwt);
-      throw new Error("should have rejected reused token");
+      throw new Error('should have rejected reused token');
     } catch (err) {
       expect(err.status).to.equal(401);
       jwt = res.headers.authorization;

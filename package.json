@@ -9,6 +9,8 @@
   "scripts": {
     "build": "webpack --progress --colors --display-error-details",
     "dev": "yarn build && yarn start",
+    "eslint": "eslint **/*.js",
+    "eslint:fix": "eslint **/*.js --fix",
     "start": "nodemon server.js",
     "test": "nyc mocha --reporter spec"
   },
@@ -19,6 +21,7 @@
     "ascii-art": "^1.4.2",
     "babel-register": "^6.26.0",
     "date-and-time": "^0.6.2",
+    "eslint": "^4.18.2",
     "good": "^8.1.0",
     "good-console": "^7.1.0",
     "good-squeeze": "^5.0.2",
