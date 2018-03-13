@@ -1,19 +1,15 @@
 import { Schema, Model } from 'mongoose';
 
-export const Key = new Schema({
-  name: {
+export const Url = new Schema({
+  url: {
     type: String,
     required: true,
     unique: true
   },
-  isPrivate: {
-    type: Boolean,
-    default: false
-  },
-  domain: {
+  type: {
     type: String,
     required: true
   }
 });
 
-export default Model(Key);
+export default Model(Url);
