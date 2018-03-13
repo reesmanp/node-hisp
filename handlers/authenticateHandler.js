@@ -1,67 +1,104 @@
-import JWT from 'jsonwebtoken';
-import crypto from 'crypto';
+import moment from 'moment';
+import randomstring from 'randomstring';
+import { encrypt, hash } from '../util/krypto';
+import { JWTModel, UserModel } from '../util/mongoose';
+import { signToken } from '../util/jwt';
 
-// Sign Up
-function signup(server, request, response) {
-  const {
-    username,
-    password
-  } = request.payload;
+const OK = 200;
+const BAD_REQUEST = 400;
+const SERVER_ERROR = 500;
 
-  if (username && password) {
-    const users = server.app.db.collection('users');
-    const status = users.updateOne(
-      { username: username },
-      { $setOnInsert: { password: password } },
-      { upsert: true }
-    );
-    return response(status);
+const KEY_LENGTH = 16;
+const TIME_OUT = 5;
+
+/*
+ * Sign Up
+ * POST
+ * /authenticate/register
+ */
+export async function signup(server, request, h) {
+  const [username, ] = hash(request.payload.username, request.username.password);
+
+  let user;
+  try {
+    user = await UserModel.findOne({ username: username });
+    if (user) {
+      throw new Error();
+    }
+  } catch (e) {
+    console.error(e);
+    return h.response('Username already exists!').code(BAD_REQUEST);
   }
-  return response('No username or password!').code(400);
-}
 
-// Sign In
-function signin(server, request, response) {
-  const {
-    username,
-    password
-  } = request.payload;
+  const [password, salt] = hash(request.payload.password);
+  const [email, ] = encrypt(request.payload.email, salt);
 
-  if (username && password) {
-    const users = server.app.db.collection('users');
-    users.findOne(
-      { username: username }
-    ).then(user => {
-      if (user.password === password) {
-        const token = {
-          username: username,
-          sessionId: crypto.randomBytes(256).toString('base64'),
-          iat: Date.now()
-        };
-        server.app.sessions[`${token.sessionId}`] = {
-          token: token,
-          device: request.plugins.scooter.toJSON(),
-          timeout: setTimeout(() => delete server.app.sessions[`${token.sessionId}`], 5 * 60 * 1000)
-        };
-        const jwt = JWT.sign(token, process.env.JWTSECRET, { expiresIn: 5 * 60 });
-        return response('You are logged in!').header('Authorization', jwt);
-      }
-      return response('Invalid username or password').code(400);
-    });
-  } else {
-    return response('No username or password!').code(400);
+  const newUser = UserModel({
+    username: username,
+    password: password,
+    salt: salt,
+    email: email
+  });
+
+  try {
+    await newUser.save();
+  } catch (e) {
+    console.error(e);
+    return h.response('Could not create the user!').code(SERVER_ERROR);
   }
+
+  return h.response('User created!').code(OK);
 }
 
-// Sign Out
-function signout(server, request, response) {
-  clearTimeout(server.app.sessions[`${request.auth.credentials.sessionId}`]);
-  delete server.app.sessions[`${request.auth.credentials.sessionId}`];
-  return response('You are logged out');
+/*
+ * Sign In
+ * POST
+ * /authenticate
+ */
+export async function signin(server, request, h) {
+  const username = hash(request.payload.username, request.payload.password);
+
+  try {
+    await UserModel.findOne({ username: username });
+  } catch (e) {
+    return h.response('No user with those credentials found!').code(BAD_REQUEST);
+  }
+
+  // Create JWT
+  const now = moment();
+  const payload = {
+    user: username,
+    randomString: randomstring(KEY_LENGTH),
+    originalTime: now,
+    newTime: now.add(TIME_OUT, 'minutes'),
+    ip: request.info.remoteAddress
+  };
+  const jwt = new JWTModel(payload);
+
+  try {
+    await jwt.save();
+  } catch (e) {
+    console.error(e);
+    return h.response('Could not save the session!').code(BAD_REQUEST);
+  }
+
+  request.cookieAuth.clear();
+  request.cookieAuth.set({ HISPToken: signToken(payload) });
+  return h.response('You are signed in!').code(OK);
 }
 
-export {
-  signup,
-  signin,
-  signout
-};
+/*
+ * Sign Out
+ * DELETE
+ * /authenticate
+ */
+export async function signout(server, request, h) {
+  try {
+    await webToken.findOneAndRemove({ randomString: request.auth.credentials.randomString });
+  } catch (e) {
+    return h.response('Could not terminate session!').code(SERVER_ERROR);
+  }
+
+  request.cookieAuth.clear();
+  return h.response('You are signed out!').code(OK);
+}

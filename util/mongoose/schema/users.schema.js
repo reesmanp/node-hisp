@@ -2,21 +2,21 @@ import { Schema, Model } from 'mongoose';
 import { generate } from 'randomstring';
 
 export const User = new Schema({
-  username: {
+  username: { // Hashed username
     type: String,
     required: true,
     unique: true
   },
-  password: {
+  password: { // Hashed password
     type: String,
     required: true
   },
-  salt: {
+  salt: { // Salt
     type: String,
     unique: true,
     default: generate(16)
   },
-  email: {
+  email: { // Hashed email
     type: String,
     required: true
   }

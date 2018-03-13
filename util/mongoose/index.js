@@ -1,8 +1,16 @@
 import mongoose from './mongoose';
-import KeySchema from './schema/keys.schema';
+import DomainModel from './schema/domains.schema';
+import JWTModel from './schema/jwt.schema';
+import KeyModel from './schema/keys.schema';
+import UrlModel from './schema/urls.schema';
+import UserModel from './schema/users.schema';
 
 export {
-  KeySchema
+  DomainModel,
+  JWTModel,
+  KeyModel,
+  UrlModel,
+  UserModel
 };
 
 export default mongoose;

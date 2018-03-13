@@ -1,14 +1,10 @@
 import { Schema, Model } from 'mongoose';
 
 export const Url = new Schema({
-  url: {
+  url: { // URI string
     type: String,
     required: true,
     unique: true
-  },
-  type: {
-    type: String,
-    required: true
   }
 });
 

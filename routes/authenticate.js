@@ -8,7 +8,7 @@ exports.routes = server => {
     config: {
       auth: false
     },
-    handler: (request, response) => signup(server, request, response)
+    handler: (request, h) => signup(server, request, h)
   });
 
   // Sign In Route
@@ -18,20 +18,20 @@ exports.routes = server => {
     config: {
       auth: false
     },
-    handler: (request, response) => signin(server, request, response)
+    handler: (request, h) => signin(server, request, h)
   });
 
   // Check if Signed In Route
   server.route({
     method: 'GET',
     path: '/authenticate',
-    handler: (request, response) => response().header('authorization', request.auth.token)
+    handler: (request, h) => h.response().header('authorization', request.auth.token)
   });
 
   // Sign Out Route
   server.route({
     method: 'DELETE',
     path: '/authenticate',
-    handler: (request, response) => signout(server, request, response)
+    handler: (request, h) => signout(server, request, h)
   });
 };

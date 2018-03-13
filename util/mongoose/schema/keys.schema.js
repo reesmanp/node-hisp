@@ -1,16 +1,16 @@
 import { Schema, Model } from 'mongoose';
 
 export const Key = new Schema({
-  name: {
+  name: { // Unique key name
     type: String,
     required: true,
     unique: true
   },
-  isPrivate: {
+  isPrivate: { // Is a private or a public key
     type: Boolean,
     default: false
   },
-  domain: {
+  domain: { // Domain the key belongs to
     type: String,
     required: true
   }

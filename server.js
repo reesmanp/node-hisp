@@ -17,7 +17,6 @@ const server = new Hapi.Server({
 server.app.mailServer = new mailServer();
 server.app.mailServer.run();
 server.app.db = mongoose;
-server.app.sessions = {};
 
 // Create new JWT secret
 process.env.JWTSECRET = require('crypto').randomBytes(256).toString('base64');
@@ -33,7 +32,7 @@ async function startServer() {
 
   server.auth.strategy('jwt', 'jwt', {
       key: process.env.JWTSECRET,
-      validate: require('./util/auth').jwtAuth,
+      validate: require('./util/auth').validateJWT,
       verifyOptions: {algorithms: ['HS256']}
   });
 

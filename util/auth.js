@@ -1,49 +1,88 @@
-import JWT from 'jsonwebtoken';
-import server from '../server';
-import _ from 'lodash';
+import { signToken } from './jwt';
+import { JWTModel } from './mongoose';
+import moment from 'moment';
+
+const TIME_OUT = 5;
 
 // JWT Validation Function
-function jwtAuth(decoded, request, callback) {
-  const sessions = server.app.sessions;
+export async function validateJWT(decoded, request) {
+  const {
+    user,
+    originalTime,
+    newTime,
+    randomString,
+    ip
+  } = decoded;
 
-  // Find a session
-  if (sessions.hasOwnProperty(decoded.sessionId)) {
-    const session = sessions[`${decoded.sessionId}`];
-    const device = request.plugins.scooter.toJSON();
-
-    // If the JWT matches the latest issued JWT
-    if (session.token.username === decoded.username && session.token.iat === decoded.iat) {
-      // A different device is using the issued JWT
-      if (!_.isEqual(device, session.device)) {
-        return callback(null, false);
-      }
-
-      // Refresh JWT
-      const token = {
-        username: decoded.username,
-        sessionId: decoded.sessionId,
-        iat: Date.now()
-      };
-
-        // Update stored JWT
-      clearTimeout(session.timeout);
-      server.app.sessions[`${decoded.sessionId}`] = {
-        token: token,
-        device: device,
-        timeout: setTimeout(() => delete server.app.sessions[`${decoded.sessionId}`], 5 * 60 * 1000)
-      };
-
-      // Sign new JWT
-      request.auth.token = JWT.sign(token, process.env.JWTSECRET, { expiresIn: 5 * 60 });
-      return callback(null, true);
-    }
-    // JWT is not the latest issued JWT
-    return callback(null, false);
+  // Check if JWT values exist
+  if (!user || !originalTime || !newTime || !randomString || !ip) {
+    return {
+      isValid: false,
+      credentials: {}
+    };
   }
-  // Session does not exist in memory
-  return callback(null, false);
-}
 
-export {
-  jwtAuth
-};
+  // Find JWT in DB
+  let token;
+  try {
+    token = await JWTModel.findOne({ randomString: randomString });
+    if (!token) {
+      throw new Error();
+    }
+  } catch (e) {
+    return {
+      isValid: false,
+      credentials: {}
+    };
+  }
+
+  // Compare stored JWT with received JWT
+  if (
+    (user !== token.user) ||
+    (moment(originalTime).diff(token.originalTime) !== 0) ||
+    (moment(newTime).diff(token.newTime) !== 0) ||
+    (ip !== token.ip) ||
+    (ip !== request.info.remoteAddress)
+  ) {
+    return {
+      isValid: false,
+      credentials: {}
+    };
+  }
+
+  // JWT expired
+  const now = moment();
+  if (now.diff(newTime) > 0) {
+    return {
+      isValid: false,
+      credentials: {}
+    };
+  }
+
+  // Create new JWT
+  const newWebToken = {
+    user: user,
+    originalTime: originalTime,
+    newTime: now.add(TIME_OUT, 'minutes'),
+    randomString: randomString,
+    ip: ip,
+    createdAt: now
+  };
+  const newToken = Object.assign(token, newWebToken);
+
+  // Send new JWT to DB
+  try {
+    await JWTModel.findOneAndUpdate({ randomString: randomString }, newToken);
+  } catch (e) {
+    return {
+      isValid: false,
+      credentials: {}
+    };
+  }
+
+  // Successful authentication
+  return {
+    valid: true,
+    credentials: { HISPToken: signToken(newWebToken) }
+  };
+}
