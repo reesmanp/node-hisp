@@ -6,18 +6,21 @@ module.exports = {
     index: './views/index.js'
   },
   output: {
-    path: __dirname + '/static/js',
+    path: `${__dirname}/static/js`,
     filename: '[name].min.js'
   },
   plugins: [
     new babili()
   ],
   module: {
-    loaders: [
-      {
-        test: /\.jsx?$/,
-        loader: 'babel-loader'
+    rules: [{
+      test: /\.jsx?$/,
+      include: `${__dirname}/views`,
+      loader: 'babel-loader',
+      options: {
+	presets: 'es2015'
       }
-    ]
-  }
+    }]
+  },
+  target: 'web'
 };

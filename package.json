@@ -8,9 +8,12 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --progress --colors --display-error-details",
-    "dev": "yarn build && yarn start",
+    "dev": "npm run dev:build && npm run start",
+    "dev:build": "npm run build -- --mode development",
     "eslint": "eslint **/*.js",
     "eslint:fix": "eslint **/*.js --fix",
+    "prod": "NODE_ENV=production npm run prod:build && npm run start",
+    "prod:build": "npm run build -- --mode production",
     "start": "nodemon server.js",
     "test": "nyc mocha --reporter spec"
   },
@@ -18,7 +21,8 @@
     "**/test/**/*.js"
   ],
   "dependencies": {
-    "ascii-art": "^1.4.2",
+    "ascii-art": "^1.4.3",
+    "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
     "date-and-time": "^0.6.2",
     "eslint": "^4.18.2",
@@ -33,11 +37,11 @@
     "jsonwebtoken": "^8.2.0",
     "lodash": "^4.17.5",
     "moment": "^2.21.0",
-    "mongoose": "^5.0.9",
+    "mongoose": "^5.0.10",
     "muicss": "^0.9.36",
     "node-env-file": "^0.1.8",
     "nodemailer": "^4.6.2",
-    "nodemon": "^1.17.1",
+    "nodemon": "^1.17.2",
     "randomstring": "^1.1.5",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
@@ -49,6 +53,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
@@ -56,7 +61,7 @@
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "mocha": "^5.0.4",
-    "nyc": "^11.4.1",
+    "nyc": "^11.6.0",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.11"
   }
