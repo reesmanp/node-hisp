@@ -1,0 +1,8 @@
+.loginPage {
+    display: flex;
+    flex-direction: column;
+}
+
+.loginPageCenterItem {
+    justify-content: center;
+}

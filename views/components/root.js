@@ -1,9 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import appStore from '../reducers'
-import Banner from './banner';
-import Body from './body';
+import appStore from '../reducers';
+import LoginPage from './pages/login.page';
 
 const store = createStore(
   appStore,
@@ -14,9 +13,6 @@ const store = createStore(
 
 export default () => (
   <Provider store={store}>
-    <div>
-      <Banner/>
-      <Body/>
-    </div>
+    <LoginPage/>
   </Provider>
 );
