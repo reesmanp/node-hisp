@@ -28,7 +28,7 @@ const banner = () => {
 class LoginBanner extends Component {
   render() {
     return (
-      <Appbar>
+      <Appbar className={this.props.className}>
         <LoginButton className='mui--pull-right'/>
       </Appbar>
     );

@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { auth as Actions } from '../actions';
 
-let initialState = Map({
+const initialState = Map({
   auth: Map({
     username: '',
     password: '',

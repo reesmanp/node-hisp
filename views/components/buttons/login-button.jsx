@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import Button from 'muicss/lib/react/button';
 import LoginForm from '../loginForm';
-import { auth as Actions } from '../../actions/index';
+import { auth, modal } from '../../actions/index';
 import styles from './login-button.css';
 import 'whatwg-fetch'
 
@@ -15,32 +15,13 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  signout: () => {
-    dispatch(Actions.signout());
-  }
+  signout: () => dispatch(auth.signout()),
+  modalOn: () => dispatch(modal.modalOn())
 });
 
 class LoginButton extends Component {
   static defaultProps = {
     className: ''
-  };
-
-  activateModal = () => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      return
-    }
-
-    const modalEl = document.createElement('div');
-    modalEl.id = 'modalLogin';
-    modalEl.style.width = '400px';
-    modalEl.style.height = '300px';
-    modalEl.style.margin = '100px auto';
-    modalEl.style.backgroundColor = '#fff';
-
-    //render(<LoginForm/>, modalEl);
-
-    // show modal
-    mui.overlay('on', modalEl);
   };
 
   sendSignout = () => {
@@ -59,7 +40,7 @@ class LoginButton extends Component {
   onClick = () => (
     this.props.isAuthorized
       ? this.sendSignout()
-      : this.activateModal()
+      : this.props.modalOn()
   );
 
   render() {
