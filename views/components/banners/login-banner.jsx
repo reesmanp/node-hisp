@@ -27,9 +27,14 @@ const banner = () => {
 
 class LoginBanner extends Component {
   render() {
+    const bannerClass = `${styles.appBar} ${this.props.className}`;
+    const leftClass = `${styles.pullLeft} mui--pull-left`;
+    const rightClass = 'mui--pull-right';
+
     return (
-      <Appbar className={this.props.className}>
-        <LoginButton className='mui--pull-right'/>
+      <Appbar className={bannerClass}>
+        <h2 className={leftClass}>Node HISP</h2>
+        <LoginButton className={rightClass}/>
       </Appbar>
     );
   }
